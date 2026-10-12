@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f6f8ff">
+  <meta name="color-scheme" content="dark">
+  <title>Engine Out Completey — One minute. Your voice.</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%235B8CFF'/%3E%3Cstop offset='1' stop-color='%239B63FF'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='2' y='4' width='44' height='34' rx='10' fill='url(%23g)'/%3E%3Cpath d='M11 34h12L13 45z' fill='%235B8CFF'/%3E%3Cg fill='%23fff'%3E%3Crect x='13' y='17' width='4' height='8' rx='2'/%3E%3Crect x='19' y='12' width='4' height='18' rx='2'/%3E%3Crect x='25' y='9' width='4' height='24' rx='2'/%3E%3Crect x='31' y='15' width='4' height='12' rx='2'/%3E%3C/g%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-phase="setup">
+
+  <!-- Shared SVG symbols (kept un-hidden with zero size so gradients resolve in every browser) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <defs>
+      <linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#5B8CFF"/>
+        <stop offset="1" stop-color="#9B63FF"/>
+      </linearGradient>
+      <symbol id="logo" viewBox="0 0 48 48">
+        <rect x="2" y="4" width="44" height="34" rx="10" fill="url(#logoGrad)"/>
+        <path d="M11 34h12L13 45z" fill="#5B8CFF"/>
+        <g fill="#fff">
+          <rect x="13" y="17" width="4" height="8" rx="2"/>
+          <rect x="19" y="12" width="4" height="18" rx="2"/>
+          <rect x="25" y="9" width="4" height="24" rx="2"/>
+          <rect x="31" y="15" width="4" height="12" rx="2"/>
+        </g>
+      </symbol>
+      <symbol id="icon-lock" viewBox="0 0 24 24">
+        <rect x="4.5" y="10.5" width="15" height="10" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/>
+        <path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        <circle cx="12" cy="15.5" r="1.4" fill="currentColor"/>
+      </symbol>
+      <symbol id="icon-trophy" viewBox="0 0 48 48">
+        <path d="M14 8h20v10a10 10 0 0 1-20 0V8z" fill="url(#logoGrad)"/>
+        <path d="M14 11H8v3a7 7 0 0 0 7 7M34 11h6v3a7 7 0 0 1-7 7" fill="none" stroke="#9B63FF" stroke-width="2.4" stroke-linecap="round"/>
+        <rect x="21.5" y="27" width="5" height="8" fill="#7D7DFF"/>
+        <rect x="15" y="35" width="18" height="5" rx="2.5" fill="#5B8CFF"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <svg class="logo" aria-hidden="true"><use href="#logo"/></svg>
+        <span class="brand-name">EngineOutCompletely</span>
+      </div>
+      <span class="brand-tag">One minute. Your voice.</span>
+    </header>
+
+    <main id="main">
+
+      <!-- ============ SCREEN 1: SETUP ============ -->
+      <section class="screen" id="screen-setup" aria-labelledby="setupTitle">
+        <div class="hero">
+          <svg class="hero-mark" aria-hidden="true"><use href="#logo"/></svg>
+          <div>
+            <h1 id="setupTitle" tabindex="-1">One minute. Your voice.</h1>
+            <p class="lead">Pass the device around, reveal your secret word, and speak English about it for up to 60 seconds. Each player gets a different word in every round.</p>
+          </div>
+        </div>
+
+        <form id="setupForm" novalidate>
+          <div class="setup-grid">
+            <section class="card" aria-labelledby="playersTitle">
+              <div class="card-head">
+                <h2 id="playersTitle">Players</h2>
+                <span class="count" id="playerCount">2 of 30</span>
+              </div>
+              <ol class="player-list" id="playerList"></ol>
+              <button type="button" class="btn btn-secondary btn-block" id="addPlayerBtn" data-action="add-player">Add player</button>
+              <p class="hint">Turn order follows this list. A blank name becomes a default such as “Player 1”.</p>
+            </section>
+
+            <section class="card" aria-labelledby="gameTitle">
+              <h2 id="gameTitle">Game</h2>
+
+              <div class="field">
+                <label for="roundsInput">Rounds</label>
+                <div class="stepper">
+                  <button type="button" class="btn btn-secondary stepper-btn" data-action="rounds-dec" aria-label="Fewer rounds">−</button>
+                  <input id="roundsInput" type="number" inputmode="numeric" min="1" max="30" step="1" value="3" autocomplete="off">
+                  <button type="button" class="btn btn-secondary stepper-btn" data-action="rounds-inc" aria-label="More rounds">+</button>
+                </div>
+                <p class="hint">Every player speaks once per round. Choose 1 to 30.</p>
+              </div>
+
+              <fieldset class="field">
+                <legend>Topic category</legend>
+                <div class="chips" id="categoryGroup"></div>
+              </fieldset>
+
+              <div class="field">
+                <label for="customTopic">Custom words <span class="optional">(optional)</span></label>
+                <input id="customTopic" type="text" maxlength="500" autocomplete="off" placeholder="e.g. courage, ocean, invention">
+                <p class="hint">Enter single words separated by commas. Each player gets a different word in each round. Add at least one word per player.</p>
+              </div>
+
+              <p class="summary" id="setupSummary"></p>
+            </section>
+          </div>
+
+          <div class="errors" id="setupErrors" role="alert" tabindex="-1" hidden>
+            <p class="errors-title">A few things need fixing before you start:</p>
+            <ul id="setupErrorList"></ul>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-xl btn-block" id="startBtn">Start Game</button>
+        </form>
+      </section>
+
+      <!-- ============ GAME SHELL (screens 2 & 3 + leaderboard) ============ -->
+      <div id="gameShell" hidden>
+        <div class="gamebar">
+          <div class="gamebar-info">
+            <strong id="gbRound">Round 1 of 1</strong>
+            <span id="gbTurn">Turn 1 of 2</span>
+          </div>
+          <div class="progress" id="gbProgress" role="progressbar" aria-label="Game progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <span id="gbProgressFill"></span>
+          </div>
+          <button type="button" class="btn btn-ghost btn-sm" data-action="quit">Quit game</button>
+        </div>
+
+        <div class="game-grid">
+          <div class="stage">
+
+            <!-- Neutral handoff: shows whose turn it is, reveals nothing else -->
+            <section class="stage-card center" id="stage-handoff" hidden aria-labelledby="handoffTitle">
+              <p class="chip-info" id="handoffRound"></p>
+              <h2 class="turn-name" id="handoffTitle" tabindex="-1"></h2>
+              <p class="stage-text">Hand the device to <strong id="handoffName"></strong>. Everyone else, look away from the screen.</p>
+              <button type="button" class="btn btn-primary btn-xl" id="takeBtn" data-action="take-device">Continue</button>
+              <p class="note">Topics stay private only if nobody looks while a player reveals theirs. Hide the topic before passing the device on.</p>
+            </section>
+
+            <!-- Private topic reveal -->
+            <section class="stage-card center" id="stage-topic" hidden aria-labelledby="topicTitle">
+              <p class="chip-info" id="topicRound"></p>
+              <h2 class="stage-title" id="topicTitle" tabindex="-1"></h2>
+              <div class="topic-card" id="topicCard" data-revealed="false" aria-live="polite">
+                <div class="topic-hidden" id="topicHidden">
+                  <svg class="icon" aria-hidden="true"><use href="#icon-lock"/></svg>
+                  <span>Word hidden</span>
+                </div>
+                <p class="topic-text" id="topicText" hidden></p>
+              </div>
+              <div class="btn-row">
+                <button type="button" class="btn btn-secondary" id="revealBtn" data-action="reveal">Reveal Topic</button>
+                <button type="button" class="btn btn-secondary" id="hideBtn" data-action="hide">Hide Topic</button>
+              </div>
+              <button type="button" class="btn btn-primary btn-xl" id="readyBtn" data-action="ready">Ready</button>
+              <p class="hint" id="topicHint"></p>
+            </section>
+
+            <!-- Speaking timer -->
+            <section class="stage-card center" id="stage-timer" hidden aria-labelledby="timerTitle">
+              <p class="chip-info" id="timerRound"></p>
+              <h2 class="stage-title" id="timerTitle" tabindex="-1"></h2>
+
+              <div class="timer" id="timer" data-state="ready">
+                <svg class="ring" viewBox="0 0 280 280" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0" stop-color="#5B8CFF"/>
+                      <stop offset="1" stop-color="#A56BFF"/>
+                    </linearGradient>
+                  </defs>
+                  <circle class="ring-track" cx="140" cy="140" r="120"/>
+                  <circle class="ring-fg" id="ringFg" cx="140" cy="140" r="120" transform="rotate(-90 140 140)"/>
+                  <line class="ring-tick" id="ringTick" x1="140" y1="246" x2="140" y2="274"/>
+                </svg>
+                <div class="timer-center">
+                  <span class="time" id="timeText" role="timer">01:00</span>
+                  <span class="state-pill" id="statePill"><i class="dot"></i><span id="stateText">Ready</span></span>
+                </div>
+              </div>
+
+              <ul class="legend" aria-label="Scoring">
+                <li id="legendHalf">30 seconds: ½ point</li>
+                <li id="legendFull">60 seconds: 1 point</li>
+              </ul>
+
+              <div class="btn-row timer-controls">
+                <button type="button" class="btn btn-primary btn-lg" id="startTimerBtn" data-action="timer-start">Start</button>
+                <button type="button" class="btn btn-secondary btn-lg" id="stopTimerBtn" data-action="timer-stop">Stop</button>
+                <button type="button" class="btn btn-ghost btn-lg" id="resetTimerBtn" data-action="timer-reset">Reset</button>
+              </div>
+
+              <div class="review" id="review" hidden>
+                <p class="review-title" id="reviewTitle"></p>
+                <p class="review-points" id="reviewPoints"></p>
+                <p class="review-reason" id="reviewReason"></p>
+                <button type="button" class="btn btn-primary btn-xl btn-block" id="saveBtn" data-action="save-score">Confirm and save score</button>
+              </div>
+
+              <button type="button" class="btn btn-ghost btn-sm" id="peekBtn" data-action="back-to-topic">Look at the topic card again</button>
+            </section>
+          </div>
+
+          <aside class="board card" aria-labelledby="boardTitle">
+            <h2 id="boardTitle">Leaderboard</h2>
+            <ol class="board-list" id="boardList"></ol>
+          </aside>
+        </div>
+      </div>
+
+      <!-- ============ SCREEN 4: RESULTS ============ -->
+      <section class="screen" id="screen-results" hidden aria-labelledby="resultsTitle">
+        <div class="results-hero">
+          <svg class="trophy" aria-hidden="true"><use href="#icon-trophy"/></svg>
+          <h1 id="resultsTitle" tabindex="-1">That's a wrap!</h1>
+          <p class="winner-line" id="winnerLine"></p>
+          <p class="winner-sub" id="winnerSub"></p>
+        </div>
+
+        <section class="card" aria-labelledby="rankTitle">
+          <div class="card-head">
+            <h2 id="rankTitle">Final rankings</h2>
+            <span class="count" id="turnsDone"></span>
+          </div>
+          <ol class="rank-list" id="rankList"></ol>
+        </section>
+
+        <details class="card history">
+          <summary>Turn history</summary>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th scope="col">Round</th><th scope="col">Player</th><th scope="col">Topic</th><th scope="col">Time</th><th scope="col">Points</th></tr></thead>
+              <tbody id="historyBody"></tbody>
+            </table>
+          </div>
+        </details>
+
+        <div class="btn-row results-actions">
+          <button type="button" class="btn btn-primary btn-xl" data-action="play-again">Play Again</button>
+          <button type="button" class="btn btn-secondary btn-xl" data-action="new-game">New Game</button>
+        </div>
+      </section>
+
+      <!-- ============ ERROR STATE ============ -->
+      <section class="screen" id="screen-error" hidden aria-labelledby="errorTitle">
+        <div class="card error-card">
+          <h1 id="errorTitle" tabindex="-1">Something went wrong</h1>
+          <p>The game hit an unexpected problem and had to stop. Your current game can't be recovered, but you can start a fresh one.</p>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary btn-lg" data-action="error-reset">Back to setup</button>
+            <button type="button" class="btn btn-secondary btn-lg" data-action="error-reload">Reload the page</button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Confirmation dialog -->
+  <dialog id="confirmDialog" aria-labelledby="dialogTitle" aria-describedby="dialogBody">
+    <h2 id="dialogTitle"></h2>
+    <p id="dialogBody"></p>
+    <div class="btn-row">
+      <button type="button" class="btn btn-secondary" id="dialogCancel" data-action="dialog-cancel">Cancel</button>
+      <button type="button" class="btn btn-primary" id="dialogOk" data-action="dialog-ok">Confirm</button>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" hidden></div>
+  <div class="sr-only" id="live" aria-live="polite" aria-atomic="true"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
